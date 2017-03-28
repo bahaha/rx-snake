@@ -1,0 +1,19 @@
+div.gameBoard {
+    display: inline-block;
+    border: 1.5em solid #2B386C;
+    border-radius: 1.5em;
+    background-color: #9CCB02;
+}
+
+div.gameBoard > header {
+    padding: .5em;
+    color: #173900;
+}
+div.gameBoard > header:after {
+    content: '';
+    display: block;
+    background-color: #173900;
+    height: .15em;
+    width: calc(100% - .15rem);
+    margin: 0 auto;
+}

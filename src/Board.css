@@ -1,0 +1,18 @@
+div.board {
+    display: inline-block;
+    padding: .5em;
+}
+
+div.row {
+    display: flex;
+}
+
+div.cell {
+    width: 1em;
+    height: 1em;
+    color: #173900;
+}
+
+div.cell.snake, div.cell.egg {
+    background-color: #173900;
+}

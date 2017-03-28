@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+@media screen and (min-width: 550px){
+  body{
+    font-size: 16px;
+  }
+}
+@media screen and (min-width: 410px) and (max-width: 549px) {
+  body{
+    font-size: 12px;
+  }
+}
+@media screen and (min-width: 275px) and (max-width: 409px) {
+  body{
+    font-size: 8px;
+  }
+}
+@media screen and (min-width: 0px) and (max-width: 274px) {
+  body{
+    min-width: 175px;
+    font-size: 5px;
+  }
+}
