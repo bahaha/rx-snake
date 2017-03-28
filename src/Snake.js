@@ -11,9 +11,9 @@ export const DIRECTION = {
 const snakeProto = {
     direction: DIRECTION.DOWN,
     length: 3,
-    move: function (direction = this.direction) {
+    move: function (direction = this.direction, boundary) {
         const {length, head} = this;
-        const newHead = head.add(direction);
+        const newHead = boundary ? head.add(direction).mod(boundary) : head.add(direction);
         return factory({
             head: newHead,
             positions: [newHead,...slice(this.positions, 0, this.length -1)],

@@ -14,8 +14,10 @@ export const pointProto = {
         return factory(nextPosition);
     },
     mod: function mod({width, height}) {
+        const x = this.x < 0 ? width + this.x : this.x;
+        const y = this.y < 0 ? height + this.y : this.y;
         const nextPosition = mergeWith(
-            {x: this.x, y: this.y},
+            {x, y},
             {x: width, y: height},
             (nowPosition, max = 1) => nowPosition % max
         );

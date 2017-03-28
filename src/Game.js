@@ -28,6 +28,8 @@ export default class Game extends Component {
     }
 
     setUpStreams() {
+        const tick$ = Observable.interval(500)
+            .map(() => this.state.snake.direction);
         const keyCodes$ = Observable.fromEvent(document.body, 'keydown')
             .map(e => e.keyCode);
         const gameStart = keyCodes$.filter(code => code === 32);
@@ -41,8 +43,8 @@ export default class Game extends Component {
             .map(event => DIRECTION.DOWN);
         const changeDirection$ = Observable.merge(left$, up$, right$, down$)
             .filter(direction => this.state.snake.shouldDirectionChange(direction));
-        this.move$ = changeDirection$.subscribe(direction => {
-            const nextMove = this.state.snake.move(direction);
+        this.move$ = tick$.merge(changeDirection$).subscribe(direction => {
+            const nextMove = this.state.snake.move(direction, this.state.size);
             this.setState((prevState, props) => ({...prevState, snake: nextMove}));
         });
     }

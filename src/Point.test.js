@@ -75,8 +75,16 @@ describe('Point', () => {
         }).toEqual(expected);
     });
     it('can be modded if the coordinate are out of bounds', () => {
-        const expected = {x: 1, y: 299};
-        const point = Point({x: 501, y: 299});
+        let expected = {x: 1, y: 299};
+        let point = Point({x: 501, y: 299});
+        expectPointProps({
+            point,
+            transform: v => v.mod({width: 500, height: 300}),
+            getter: getPosition
+        }).toEqual(expected);
+
+        expected = {x: 499, y: 299};
+        point = Point({x: -1, y: -1});
         expectPointProps({
             point,
             transform: v => v.mod({width: 500, height: 300}),
