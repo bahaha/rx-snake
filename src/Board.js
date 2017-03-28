@@ -1,17 +1,18 @@
 import React from 'react';
 import classNames from 'classnames';
 import {range} from 'lodash/util';
-import factory, {pointProto} from './Point';
+import {pointProto} from './Point';
+import Snake from './Snake';
 
 import './Board.css';
 
 const Board = (props) => {
-    const eggPoint = factory({position: props.egg});
     const getRows = width => makeCells => range(width).map(y => <div key={y} className="row">{makeCells(y)}</div>)
     const getCells = height => y => range(height).map(x => {
         const cellClass = classNames({
             cell: true,
-            egg: eggPoint.at({x, y})
+            egg: props.egg.at({x, y}),
+            snake: props.snake.inPosition({x, y})
         });
         return <div key={x} className={cellClass}></div>
     });
@@ -33,6 +34,9 @@ Board.propTypes = {
             throw new Error(`Invalid prop ${propName} supplied to ${componentName}. Use factory from Point to make a egg`);
         }
     },
+}
+Board.defaultProps = {
+    snake: Snake()
 }
 
 

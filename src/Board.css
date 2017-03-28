@@ -13,6 +13,11 @@ div.cell {
     color: #173900;
 }
 
-div.cell.snake, div.cell.egg {
+div.cell.snake{
     background-color: #173900;
+}
+
+div.cell.egg {
+    background-color: #173900;
+    transform: rotate(45deg);
 }

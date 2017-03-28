@@ -1,43 +1,42 @@
-import {get, assign, mergeWith, hasIn} from 'lodash/object';
-const defaultPosition = {x: 0, y: 0};
+import {assign, mergeWith} from 'lodash/object';
+import {unionWith} from 'lodash/array';
 export const pointProto = {
-    position: defaultPosition,
-    moveTo: function moveTo({x, y}) {
-        this.position = {x, y};
-        return this;
+    x: 0,
+    y: 0,
+    moveTo: function moveTo({x = this.x, y = this.y}) {
+        return factory({x, y});
     },
-    add: function add(point = defaultPosition) {
+    add: function add({x, y}) {
         const nextPosition = mergeWith(
-            this.position,
-            get(point, 'position'),
+            {x: this.x, y: this.y},
+            {x,y},
             (nowPosition, transform = 0) => nowPosition + transform);
-        return this.moveTo(nextPosition);
+        return factory(nextPosition);
     },
-    mod: function mod(boundary) {
+    mod: function mod({width, height}) {
         const nextPosition = mergeWith(
-            this.position,
-            boundary,
+            {x: this.x, y: this.y},
+            {x: width, y: height},
             (nowPosition, max = 1) => nowPosition % max
         );
-        return this.moveTo(nextPosition);
+        return factory(nextPosition);
     },
     equal: function equal(other) {
-        return this.position.x === other.position.x &&
-                this.position.y === other.position.y;
+        return this.x === other.x && this.y === other.y;
     },
     at: function at({x, y}) {
-        return this.position.x === x && this.position.y === y;
+        return this.equal({x,y});
+    },
+    reverse: function() {
+        return unionWith(
+            [{x: this.x, y: -this.y}, {x: -this.x, y: this.y}].map(point => factory(point)),
+            (p, op) => this.equal(p) || p.equal(op)
+        );
     }
 };
 
 export default function factory(option) {
     const instance = Object.create(pointProto);
-    if(option && hasIn(option, 'x') && hasIn(option, 'y')){
-        option.position = {
-            x: option.x,
-            y: option.y
-        };
-    }
     assign(instance, option);
     return instance;
 }
