@@ -15,6 +15,12 @@ describe('<Board />', () => {
         const wrapper = shallow(<Board size={size} egg={eggPoint}/>);
         expect(wrapper.find('.cell.egg').length).toBe(1);
     });
+    it('should throw error if not provide any egg position', () => {
+        const validatingBoardEggProto = () => {
+            Board.propTypes.egg({size}, 'egg', 'Board');
+        };
+        expect(validatingBoardEggProto).toThrow()
+    });
     it('should render snake by the snake position', () => {
         const snake = Snake({
             positions: [Point({x: 1, y: 2}), Point({x: 0, y: 2}), Point({x: 0, y: 1})],

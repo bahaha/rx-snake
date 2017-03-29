@@ -75,5 +75,33 @@ describe('Snake', () => {
         expect(snake.shouldDirectionChange(DIRECTION.LEFT)).toBeTruthy();
         expect(snake.shouldDirectionChange(DIRECTION.RIGHT)).toBeTruthy();
     });
+    it('should return true if the snake is dead', () => {
+        const initialPositions = [
+            Point({x: 0, y: 8}), Point({x: 0, y: 7}), Point({x: 0, y: 6}),
+            Point({x: 0, y: 5}), Point({x: 0, y: 3}), Point({x: 0, y: 4}),
+            Point({x: 0, y: 2}), Point({x: 0, y: 1}), Point({x: 0, y: 0}),
+        ];
+        let snake = factory({positions: initialPositions, length: 9});
+        // head appears twice
+        snake = snake.move(DIRECTION.UP);
+        expect(snake.isDead(snake.head)).toBeTruthy();
+    });
+    it('should return false if the snake is NOT dead', () => {
+        const initialPositions = [
+            Point({x: 0, y: 8}), Point({x: 0, y: 7}), Point({x: 0, y: 6}),
+            Point({x: 0, y: 5}), Point({x: 0, y: 3}), Point({x: 0, y: 4}),
+            Point({x: 0, y: 2}), Point({x: 0, y: 1}), Point({x: 0, y: 0}),
+        ];
+        let snake = factory({positions: initialPositions, length: 9});
+        snake = snake.move();
+        expect(snake.isDead(snake.head)).toBeFalsy();
+    });
+    it('should grow the snake size if grow is called', () => {
+        let snake = factory({length: 3});
+        snake.grow();
+        expect(snake.length).toBe(4);
+        snake.grow(10);
+        expect(snake.length).toBe(14);
+    });
 
 });
