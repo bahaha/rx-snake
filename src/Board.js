@@ -17,14 +17,27 @@ const Board = (props) => {
         return <div key={x} className={cellClass}></div>
     });
     const makeCellsPerRow = getCells(props.size.height);
+    const isOverClass = classNames({
+        mask: true,
+        active: props.isOver,
+    });
     return (
-        <div className="board">
-            {getRows(props.size.width)(makeCellsPerRow)}
+        <div className="board-wrapper">
+            <div className="board">
+                {getRows(props.size.width)(makeCellsPerRow)}
+            </div>
+            <div className={isOverClass}>
+                <h3>Game Over</h3>
+                <div className="score">You got: <span>{props.score}</span> point.</div>
+                <div className="hint">Restart game by hitting <span className="key">SPACE</span> on keyboard.</div>
+            </div>
         </div>
     );
 }
 
 Board.propTypes = {
+    score: React.PropTypes.number,
+    isOver: React.PropTypes.bool,
     size: React.PropTypes.shape({
         width: React.PropTypes.number.isRequired,
         height: React.PropTypes.number.isRequired,
@@ -36,6 +49,8 @@ Board.propTypes = {
     },
 }
 Board.defaultProps = {
+    isOver: false,
+    score: 0,
     snake: Snake()
 }
 

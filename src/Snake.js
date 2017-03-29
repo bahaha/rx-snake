@@ -27,6 +27,13 @@ const snakeProto = {
     shouldDirectionChange: function({x, y}) {
         const forbidden = dropWhile(this.direction.reverse(), d => d.equal(this.direction));
         return findIndex(forbidden, {x, y}) === -1;
+    },
+    grow: function(size= 1) {
+        this.length = this.length + size;
+        return this;
+    },
+    isDead: function({x, y}) {
+        return find(this.positions.slice(1), position => position.at({x, y}));
     }
 }
 

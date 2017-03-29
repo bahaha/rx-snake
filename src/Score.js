@@ -3,7 +3,7 @@ import {padStart} from 'lodash/string';
 
 const Score = (props) => {
     return (
-        <div className="score">{padStart(props.score, 4, '0')}</div>
+        <div className="score">{padStart(props.score, 3, '0')}</div>
     )
 }
 Score.propTypes = {

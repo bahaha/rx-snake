@@ -2,6 +2,44 @@ div.board {
     display: inline-block;
     padding: .5em;
 }
+div.board-wrapper {
+    position: relative;
+}
+div.mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #173900;
+    font-size: 2em;
+    opacity: .7;
+    display: none;
+    z-index: -999;
+}
+div.mask.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+div.mask.active div.score {
+    font-size: .8em;
+}
+div.mask.active div.score span{
+    font-weight: bold;
+    font-size: 1.2em;
+}
+div.mask.active div.hint {
+    margin-top: .5em;
+    font-size: .6em;
+}
+div.mask.active div.hint span.key {
+    border: 3px solid #000;
+    border-radius: .6rem;
+    padding: .2rem;
+}
 
 div.row {
     display: flex;

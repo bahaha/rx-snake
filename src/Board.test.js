@@ -22,5 +22,14 @@ describe('<Board />', () => {
         });
         const wrapper = shallow(<Board size={size} egg={eggPoint} snake={snake}/>);
         expect(wrapper.find('.cell.snake').length).toBe(3);
-    })
+    });
+    it('should render mask and score when game is over', () => {
+        const wrapper = shallow(<Board size={size} egg={eggPoint} score={99} isOver={true}/>);
+        expect(wrapper.find('.score span').text()).toBe('99');
+        expect(wrapper.find('.mask.active').length).toBe(1);
+    });
+    it('should NOT show the mask if game is NOT over', () => {
+        const wrapper = shallow(<Board size={size} egg={eggPoint} score={99} isOver={false}/>);
+        expect(wrapper.find('.mask.active').length).toBe(0);
+    });
 });

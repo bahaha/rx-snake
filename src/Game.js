@@ -3,15 +3,23 @@ import Score from './Score';
 import Board from './Board';
 import {random} from './Point';
 import Snake, {DIRECTION} from './Snake';
+import BezierEasing from './util/bezier-easing';
 import './Game.css';
-import {Observable} from "rxjs";
+import {Observable, BehaviorSubject, Scheduler} from "rxjs";
 
 export default class Game extends Component {
-    move$;
     static defaultProps = {
         width: 30,
         height: 30,
     }
+
+    initGameBoard = (size) =>  ({
+        isOver: false,
+        score: 0,
+        size,
+        egg: random(size),
+        snake: Snake()
+    });
 
     constructor(props) {
         super(props);
@@ -19,20 +27,12 @@ export default class Game extends Component {
             width: props.width,
             height: props.height,
         };
-        this.state = {
-            score: 0,
-            size,
-            egg: random(size),
-            snake: Snake()
-        };
+        this.state = this.initGameBoard(size);
     }
 
-    setUpStreams() {
-        const tick$ = Observable.interval(500)
-            .map(() => this.state.snake.direction);
+    setUpChangeDirectionStream() {
         const keyCodes$ = Observable.fromEvent(document.body, 'keydown')
             .map(e => e.keyCode);
-        const gameStart = keyCodes$.filter(code => code === 32);
         const left$ = keyCodes$.filter(code => code === 37)
             .map(event => DIRECTION.LEFT);
         const up$ = keyCodes$.filter(code => code === 38)
@@ -43,17 +43,68 @@ export default class Game extends Component {
             .map(event => DIRECTION.DOWN);
         const changeDirection$ = Observable.merge(left$, up$, right$, down$)
             .filter(direction => this.state.snake.shouldDirectionChange(direction));
-        this.move$ = tick$.merge(changeDirection$).subscribe(direction => {
-            const nextMove = this.state.snake.move(direction, this.state.size);
-            this.setState((prevState, props) => ({...prevState, snake: nextMove}));
+        return changeDirection$;
+    }
+
+    setUpStreams() {
+        const easing = BezierEasing(0, 1.35, .81, .9);
+        const headPosition$ = new BehaviorSubject(this.state.snake.head);
+        const gameOver$ = headPosition$.filter(head => this.state.snake.isDead(head))
+
+        const changeDirection$ = this.setUpChangeDirectionStream();
+        const speed$ = new BehaviorSubject(200);
+        const tick$ = speed$.switchMap(t => Observable.interval(t))
+            .map(() => this.state.snake.direction);
+
+        const move$ = tick$.merge(changeDirection$)
+            .takeUntil(gameOver$);
+
+        move$
+            .subscribeOn(Scheduler.animationFrame)
+            .subscribe(direction => {
+                const nextMove = this.state.snake.move(direction, this.state.size);
+                this.setState((prevState, props) => ({...prevState, snake: nextMove}));
+                headPosition$.next(this.state.snake.head);
+            });
+
+        const ate$ = headPosition$.filter(position => position.equal(this.state.egg))
+            .takeUntil(gameOver$);
+        ate$.subscribe(position => {
+           this.setState((prevState, props) => ({
+               ...prevState,
+               egg: random(this.state.size),
+               score: this.state.score + 1,
+               snake: this.state.snake.grow()
+           }));
+           speed$.next(200 * (1 - easing(this.state.score / 150)) + 15);
         });
+
+        //restart after over by hitting space (32)
+        const restart$ = gameOver$.switchMap(() =>
+            Observable.fromEvent(document.body, 'keydown')
+                .map(e => e.keyCode)
+                .filter(code => code === 32)
+        ).take(1);
+
+        restart$.subscribe(restart => {
+            this.setState((prevState, props) => ({...prevState, isOver: false, score: 0}));
+            this.setUpStreams()
+        });
+
+        //reset game board <== side effect
+        gameOver$.subscribe(() => this.setState((prevState, props) => ({
+            ...prevState,
+            ...this.initGameBoard(prevState.size),
+            score: prevState.score,
+            isOver: true
+        })));
     }
 
     componentDidMount() {
         this.setUpStreams();
     }
     componentWillUnmount() {
-        this.move$.unsubscribe();
+
     }
 
     render() {
@@ -63,7 +114,11 @@ export default class Game extends Component {
                     <Score score={this.state.score} />
                 </header>
                 <section>
-                    <Board size={this.state.size} egg={this.state.egg} snake={this.state.snake} />
+                    <Board size={this.state.size}
+                           score={this.state.score}
+                           egg={this.state.egg}
+                           snake={this.state.snake}
+                           isOver={this.state.isOver} />
                 </section>
             </div>
         );
