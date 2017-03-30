@@ -5,7 +5,7 @@ import {random} from './Point';
 import Snake, {DIRECTION} from './Snake';
 import BezierEasing from './util/bezier-easing';
 import './Game.css';
-import {Observable, BehaviorSubject, Scheduler} from "rxjs";
+import {Observable, BehaviorSubject} from "rxjs";
 
 export default class Game extends Component {
     static defaultProps = {
@@ -60,7 +60,6 @@ export default class Game extends Component {
             .takeUntil(gameOver$);
 
         move$
-            .subscribeOn(Scheduler.animationFrame)
             .subscribe(direction => {
                 const nextMove = this.state.snake.move(direction, this.state.size);
                 this.setState((prevState, props) => ({...prevState, snake: nextMove}));

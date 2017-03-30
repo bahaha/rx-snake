@@ -1,18 +1,19 @@
 import React from 'react';
-import {shallow} from 'enzyme';
+import {shallow, mount} from 'enzyme';
 import Point, {random} from './Point';
 import Snake from './Snake';
 import Board from './Board';
+import Row from './Row';
 
 describe('<Board />', () => {
     const size = {width: 10, height: 10};
     const eggPoint = random(size);
     it('should render cells by size', () => {
-       const wrapper = shallow(<Board size={size} egg={eggPoint}/>);
+       const wrapper = mount(<Board size={size} egg={eggPoint}/>);
        expect(wrapper.find('.cell').length).toBe(10*10);
     });
     it('should render egg by the position', () => {
-        const wrapper = shallow(<Board size={size} egg={eggPoint}/>);
+        const wrapper = mount(<Board size={size} egg={eggPoint}/>);
         expect(wrapper.find('.cell.egg').length).toBe(1);
     });
     it('should throw error if not provide any egg position', () => {
@@ -26,7 +27,7 @@ describe('<Board />', () => {
             positions: [Point({x: 1, y: 2}), Point({x: 0, y: 2}), Point({x: 0, y: 1})],
             length: 3,
         });
-        const wrapper = shallow(<Board size={size} egg={eggPoint} snake={snake}/>);
+        const wrapper = mount(<Board size={size} egg={eggPoint} snake={snake}/>);
         expect(wrapper.find('.cell.snake').length).toBe(3);
     });
     it('should render mask and score when game is over', () => {

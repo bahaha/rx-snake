@@ -3,20 +3,13 @@ import classNames from 'classnames';
 import {range} from 'lodash/util';
 import {pointProto} from './Point';
 import Snake from './Snake';
-
 import './Board.css';
+import Row from './Row';
 
 const Board = (props) => {
-    const getRows = width => makeCells => range(width).map(y => <div key={y} className="row">{makeCells(y)}</div>)
-    const getCells = height => y => range(height).map(x => {
-        const cellClass = classNames({
-            cell: true,
-            egg: props.egg.at({x, y}),
-            snake: props.snake.inPosition({x, y})
-        });
-        return <div key={x} className={cellClass}></div>
-    });
-    const makeCellsPerRow = getCells(props.size.height);
+    const getRows = ({width, height}) => range(height).map(y =>
+        <Row key={y} row={y} columns={width} snake={props.snake} egg={props.egg}></Row>
+    );
     const isOverClass = classNames({
         mask: true,
         active: props.isOver,
@@ -24,7 +17,7 @@ const Board = (props) => {
     return (
         <div className="board-wrapper">
             <div className="board">
-                {getRows(props.size.width)(makeCellsPerRow)}
+                {getRows(props.size)}
             </div>
             <div className={isOverClass}>
                 <h3>Game Over</h3>

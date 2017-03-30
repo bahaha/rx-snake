@@ -22,7 +22,7 @@ const snakeProto = {
         });
     },
     inPosition: function({x, y}) {
-        return find(this.positions, position => position.at({x, y}));
+        return !!find(this.positions, position => position.at({x, y}));
     },
     shouldDirectionChange: function({x, y}) {
         const forbidden = dropWhile(this.direction.reverse(), d => d.equal(this.direction));

@@ -1,5 +1,6 @@
 import React from 'react';
 import {padStart} from 'lodash/string';
+import pure from 'recompose/pure';
 
 const Score = (props) => {
     return (
@@ -10,4 +11,4 @@ Score.propTypes = {
     score: React.PropTypes.number.isRequired
 };
 
-export default Score;
+export default pure(Score);
