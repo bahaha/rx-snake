@@ -35,7 +35,7 @@ const getPositionInTheRow =
 		.map(point => point.x);
 
 export const shouldRowComponentUpdate = (props, nextProps) => {
-	return (props.egg.y === props.row && !props.egg.equal(nextProps.egg)) ||
+	return !props.egg.equal(nextProps.egg) ||
 		!isEqual(
 			getPositionInTheRow(props.snake.positions, props.row),
 			getPositionInTheRow(nextProps.snake.positions, nextProps.row)
