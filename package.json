@@ -8,7 +8,8 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "recompose": "^0.22.0",
-    "rxjs": "^5.2.0"
+    "rxjs": "^5.2.0",
+    "snyk": "^1.316.2"
   },
   "devDependencies": {
     "enzyme": "^2.8.0",
@@ -20,6 +21,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "eject": "react-scripts eject",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
+  },
+  "snyk": true
 }
